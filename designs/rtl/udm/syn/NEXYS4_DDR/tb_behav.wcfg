@@ -11,72 +11,78 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="31880000001fs"></ZoomEndTime>
-      <Cursor1Time time="16000000000fs"></Cursor1Time>
+      <ZoomStartTime time="0.811667 us"></ZoomStartTime>
+      <ZoomEndTime time="32.931668 us"></ZoomEndTime>
+      <Cursor1Time time="6.165000 us"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="437"></NameColumnWidth>
-      <ValueColumnWidth column_width="268"></ValueColumnWidth>
+      <NameColumnWidth column_width="163"></NameColumnWidth>
+      <ValueColumnWidth column_width="94"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="6" />
-   <wvobject fp_name="/tb/SW" type="array">
+   <WVObjectSize size="7" />
+   <wvobject type="array" fp_name="/tb/SW">
       <obj_property name="ElementShortName">SW[15:0]</obj_property>
       <obj_property name="ObjectShortName">SW[15:0]</obj_property>
       <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb/LED" type="array">
+   <wvobject type="array" fp_name="/tb/LED">
       <obj_property name="ElementShortName">LED[15:0]</obj_property>
       <obj_property name="ObjectShortName">LED[15:0]</obj_property>
       <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb/DUT/clk_gen" type="logic">
+   <wvobject type="logic" fp_name="/tb/DUT/clk_gen">
       <obj_property name="ElementShortName">clk_gen</obj_property>
       <obj_property name="ObjectShortName">clk_gen</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb/DUT/udm_reset" type="logic">
+   <wvobject type="logic" fp_name="/tb/DUT/udm_reset">
       <obj_property name="ElementShortName">udm_reset</obj_property>
       <obj_property name="ObjectShortName">udm_reset</obj_property>
    </wvobject>
-   <wvobject fp_name="group24" type="group">
+   <wvobject type="group" fp_name="group24">
       <obj_property name="label">udm_bus</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
-      <wvobject fp_name="/tb/DUT/udm_bus/req" type="logic">
+      <wvobject type="logic" fp_name="/tb/DUT/udm_bus/req">
          <obj_property name="ElementShortName">req</obj_property>
          <obj_property name="ObjectShortName">req</obj_property>
       </wvobject>
-      <wvobject fp_name="/tb/DUT/udm_bus/ack" type="logic">
+      <wvobject type="logic" fp_name="/tb/DUT/udm_bus/ack">
          <obj_property name="ElementShortName">ack</obj_property>
          <obj_property name="ObjectShortName">ack</obj_property>
       </wvobject>
-      <wvobject fp_name="/tb/DUT/udm_bus/addr" type="array">
+      <wvobject type="array" fp_name="/tb/DUT/udm_bus/addr">
          <obj_property name="ElementShortName">addr[31:0]</obj_property>
          <obj_property name="ObjectShortName">addr[31:0]</obj_property>
       </wvobject>
-      <wvobject fp_name="/tb/DUT/udm_bus/we" type="logic">
+      <wvobject type="logic" fp_name="/tb/DUT/udm_bus/we">
          <obj_property name="ElementShortName">we</obj_property>
          <obj_property name="ObjectShortName">we</obj_property>
       </wvobject>
-      <wvobject fp_name="/tb/DUT/udm_bus/wdata" type="array">
+      <wvobject type="array" fp_name="/tb/DUT/udm_bus/wdata">
          <obj_property name="ElementShortName">wdata[31:0]</obj_property>
          <obj_property name="ObjectShortName">wdata[31:0]</obj_property>
       </wvobject>
-      <wvobject fp_name="/tb/DUT/udm_bus/be" type="array">
+      <wvobject type="array" fp_name="/tb/DUT/udm_bus/be">
          <obj_property name="ElementShortName">be[3:0]</obj_property>
          <obj_property name="ObjectShortName">be[3:0]</obj_property>
       </wvobject>
-      <wvobject fp_name="/tb/DUT/udm_bus/resp" type="logic">
+      <wvobject type="logic" fp_name="/tb/DUT/udm_bus/resp">
          <obj_property name="ElementShortName">resp</obj_property>
          <obj_property name="ObjectShortName">resp</obj_property>
       </wvobject>
-      <wvobject fp_name="/tb/DUT/udm_bus/rdata" type="array">
+      <wvobject type="array" fp_name="/tb/DUT/udm_bus/rdata">
          <obj_property name="ElementShortName">rdata[31:0]</obj_property>
          <obj_property name="ObjectShortName">rdata[31:0]</obj_property>
       </wvobject>
    </wvobject>
-   <wvobject fp_name="/tb/DUT/testmem/ram" type="array">
-      <obj_property name="ElementShortName">ram[0:1023][31:0]</obj_property>
-      <obj_property name="ObjectShortName">ram[0:1023][31:0]</obj_property>
+   <wvobject type="array" fp_name="/tb/DUT/sqrt_comb/x_bi">
+      <obj_property name="ElementShortName">x_bi[31:0]</obj_property>
+      <obj_property name="ObjectShortName">x_bi[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/DUT/sqrt_comb/y_bo">
+      <obj_property name="ElementShortName">y_bo[31:0]</obj_property>
+      <obj_property name="ObjectShortName">y_bo[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
 </wave_config>

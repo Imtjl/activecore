@@ -79,6 +79,23 @@ udm_driver udm = new();
 localparam CSR_LED_ADDR         = 32'h00000000;
 localparam CSR_SW_ADDR          = 32'h00000004;
 localparam TESTMEM_ADDR         = 32'h80000000;
+localparam CSR_SQRT_X_ADDR      = 32'h10000000;
+localparam CSR_SQRT_Y_ADDR      = 32'h20000000;
+
+int sqrt_checks = 0;
+int sqrt_errors = 0;
+
+task automatic check_sqrt (input logic [31:0] x, input logic [31:0] y_exp);
+    logic [31:0] y;
+    udm.wr32(CSR_SQRT_X_ADDR, x);
+    udm.rd32(CSR_SQRT_Y_ADDR);
+    y = `UDM_BLOCK.bus_rdata_bi;
+    sqrt_checks++;
+    if (y !== y_exp) begin
+        sqrt_errors++;
+        $display("SQRT ERROR: x: 0x%8x, y: 0x%8x, expected: 0x%8x", x, y, y_exp);
+    end
+endtask
 
 initial
     begin
@@ -122,6 +139,44 @@ initial
 	// reading SW
 	udm.rd32(32'h00000004);
 	
+	// sqrt_comb test, vectors from designs/rtl/sqrt/sqrt_vectors.py
+	check_sqrt(32'h00000000, 32'h00000000);
+	check_sqrt(32'h00000001, 32'h00000001);
+	check_sqrt(32'h00000002, 32'h00000001);
+	check_sqrt(32'h00000003, 32'h00000001);
+	check_sqrt(32'h00000004, 32'h00000002);
+	check_sqrt(32'h0000000f, 32'h00000003);
+	check_sqrt(32'h00000010, 32'h00000004);
+	check_sqrt(32'h00000011, 32'h00000004);
+	check_sqrt(32'h00000063, 32'h00000009);
+	check_sqrt(32'h00000064, 32'h0000000a);
+	check_sqrt(32'h000000ff, 32'h0000000f);
+	check_sqrt(32'h00000100, 32'h00000010);
+	check_sqrt(32'h0000ffff, 32'h000000ff);
+	check_sqrt(32'h00010000, 32'h00000100);
+	check_sqrt(32'h7fffffff, 32'h0000b504);
+	check_sqrt(32'h80000000, 32'h0000b504);
+	check_sqrt(32'hfffe0000, 32'h0000fffe);
+	check_sqrt(32'hfffe0001, 32'h0000ffff);
+	check_sqrt(32'hffffffff, 32'h0000ffff);
+	check_sqrt(32'hcb1855fe, 32'h0000e404);
+	check_sqrt(32'h92e5dfe8, 32'h0000c1ec);
+	check_sqrt(32'hd26b9496, 32'h0000e818);
+	check_sqrt(32'h14a03569, 32'h000048aa);
+	check_sqrt(32'h7c2b3abe, 32'h0000b24a);
+	check_sqrt(32'hc320a473, 32'h0000df80);
+	check_sqrt(32'h42f9a039, 32'h000082f0);
+	check_sqrt(32'h096d3737, 32'h0000311f);
+	check_sqrt(32'h001d9a88, 32'h00000570);
+	check_sqrt(32'h254499c7, 32'h000061ad);
+	check_sqrt(32'ha9ae7a34, 32'h0000d06b);
+	check_sqrt(32'h9623d7cf, 32'h0000c40c);
+	check_sqrt(32'h78629522, 32'h0000af8d);
+	check_sqrt(32'hf72c2c26, 32'h0000fb8c);
+	check_sqrt(32'hc27db4ec, 32'h0000df22);
+	check_sqrt(32'hbc1e3ac1, 32'h0000db73);
+	$display ("### SQRT: %0d checks, %0d errors ###", sqrt_checks, sqrt_errors);
+
 	WAIT(1000);
 
 	$display ("### TEST PROCEDURE FINISHED ###");
