@@ -132,6 +132,7 @@ ram_dual #(
 logic [31:0] csr_sqrt_x;
 logic [31:0] sqrt_y;
 
+(* keep_hierarchy = "yes" *)
 sqrt_comb sqrt_comb (
     .x_bi(csr_sqrt_x)
     , .y_bo(sqrt_y)
