@@ -89,6 +89,8 @@ udm
 localparam CSR_LED_ADDR         = 32'h00000000;
 localparam CSR_SW_ADDR          = 32'h00000004;
 localparam TESTMEM_ADDR         = 32'h80000000;
+localparam CSR_SQRT_X_ADDR      = 32'h10000000;
+localparam CSR_SQRT_Y_ADDR      = 32'h20000000;
 
 localparam TESTMEM_WSIZE_POW    = 10;
 localparam TESTMEM_WSIZE        = 2**TESTMEM_WSIZE_POW;
@@ -127,6 +129,14 @@ ram_dual #(
     , .dat1_o(testmem_p1_rdata) 
 );
 
+logic [31:0] csr_sqrt_x;
+logic [31:0] sqrt_y;
+
+sqrt_comb sqrt_comb (
+    .x_bi(csr_sqrt_x)
+    , .y_bo(sqrt_y)
+);
+
 assign udm_bus.ack = udm_bus.req;   // bus always ready to accept request
 logic udm_csr_resp, udm_testmem_resp;
 logic [31:0] udm_csr_rdata;
@@ -140,6 +150,7 @@ always @(posedge clk_gen)
     if (srst)
         begin
         LED <= 16'hffff;
+        csr_sqrt_x <= 0;
         end
     
     else
@@ -151,6 +162,7 @@ always @(posedge clk_gen)
             if (udm_bus.we)     // writing
                 begin
                 if (udm_bus.addr == CSR_LED_ADDR) LED <= udm_bus.wdata;
+                if (udm_bus.addr == CSR_SQRT_X_ADDR) csr_sqrt_x <= udm_bus.wdata;
                 end
             
             else                // reading
@@ -164,6 +176,16 @@ always @(posedge clk_gen)
                     begin
                     udm_csr_resp <= 1'b1;
                     udm_csr_rdata <= SW;
+                    end
+                if (udm_bus.addr == CSR_SQRT_X_ADDR)
+                    begin
+                    udm_csr_resp <= 1'b1;
+                    udm_csr_rdata <= csr_sqrt_x;
+                    end
+                if (udm_bus.addr == CSR_SQRT_Y_ADDR)
+                    begin
+                    udm_csr_resp <= 1'b1;
+                    udm_csr_rdata <= sqrt_y;
                     end
                 udm_testmem_resp <= udm_testmem_enb;
                 end
