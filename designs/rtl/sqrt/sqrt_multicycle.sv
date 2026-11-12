@@ -18,13 +18,17 @@ always_ff @(posedge clk_i) begin
         x <= 0;
         y <= 0;
         m <= 0;
-    end else if (start_i) begin
+    end else if (start_i && !busy_o) begin
         x <= x_bi;
         y <= 0;
         m <= 32'h4000_0000;
     end else if (busy_o) begin
-        x <= x >= b ? x - b : x;
-        y <= x >= b ? (y >> 1) | m : y >> 1;
+        if (x >= b) begin
+            x <= x - b;
+            y <= (y >> 1) | m;
+        end else begin
+            y <= y >> 1;
+        end
         m <= m >> 2;
     end
 end

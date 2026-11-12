@@ -91,6 +91,7 @@ localparam CSR_SW_ADDR          = 32'h00000004;
 localparam TESTMEM_ADDR         = 32'h80000000;
 localparam CSR_SQRT_X_ADDR      = 32'h10000000;
 localparam CSR_SQRT_Y_ADDR      = 32'h20000000;
+localparam CSR_SQRT_BUSY_ADDR   = 32'h20000004;
 
 localparam TESTMEM_WSIZE_POW    = 10;
 localparam TESTMEM_WSIZE        = 2**TESTMEM_WSIZE_POW;
@@ -131,10 +132,19 @@ ram_dual #(
 
 logic [31:0] csr_sqrt_x;
 logic [31:0] sqrt_y;
+logic sqrt_start, sqrt_busy;
+
+// Writing X starts a calculation. Writes while busy are ignored.
+assign sqrt_start = udm_bus.req && udm_bus.ack && udm_bus.we
+                 && (udm_bus.addr == CSR_SQRT_X_ADDR) && !sqrt_busy;
 
 (* keep_hierarchy = "yes" *)
-sqrt_comb sqrt_comb (
-    .x_bi(csr_sqrt_x)
+sqrt_multicycle sqrt_multicycle (
+    .clk_i(clk_gen)
+    , .rst_i(srst)
+    , .start_i(sqrt_start)
+    , .x_bi(udm_bus.wdata)
+    , .busy_o(sqrt_busy)
     , .y_bo(sqrt_y)
 );
 
@@ -163,7 +173,7 @@ always @(posedge clk_gen)
             if (udm_bus.we)     // writing
                 begin
                 if (udm_bus.addr == CSR_LED_ADDR) LED <= udm_bus.wdata;
-                if (udm_bus.addr == CSR_SQRT_X_ADDR) csr_sqrt_x <= udm_bus.wdata;
+                if (sqrt_start) csr_sqrt_x <= udm_bus.wdata;
                 end
             
             else                // reading
@@ -187,6 +197,11 @@ always @(posedge clk_gen)
                     begin
                     udm_csr_resp <= 1'b1;
                     udm_csr_rdata <= sqrt_y;
+                    end
+                if (udm_bus.addr == CSR_SQRT_BUSY_ADDR)
+                    begin
+                    udm_csr_resp <= 1'b1;
+                    udm_csr_rdata <= {31'd0, sqrt_busy};
                     end
                 udm_testmem_resp <= udm_testmem_enb;
                 end

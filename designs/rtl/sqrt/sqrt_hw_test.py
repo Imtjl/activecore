@@ -10,6 +10,7 @@ from sqrt_vectors import make_vectors
 
 CSR_SQRT_X_ADDR = 0x10000000
 CSR_SQRT_Y_ADDR = 0x20000000
+CSR_SQRT_BUSY_ADDR = 0x20000004
 BAUDRATE = 921600
 
 
@@ -20,6 +21,11 @@ def connect(port):
 
 def check_sqrt(dev, x, y_exp):
     dev.wr32(CSR_SQRT_X_ADDR, x)
+    polls = 0
+    while dev.rd32(CSR_SQRT_BUSY_ADDR) != 0:
+        polls += 1
+        if polls == 100:
+            raise TimeoutError("sqrt calculation did not finish")
     y = dev.rd32(CSR_SQRT_Y_ADDR)
     ok = y == y_exp
     print(

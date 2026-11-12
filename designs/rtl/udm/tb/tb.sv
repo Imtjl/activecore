@@ -81,13 +81,23 @@ localparam CSR_SW_ADDR          = 32'h00000004;
 localparam TESTMEM_ADDR         = 32'h80000000;
 localparam CSR_SQRT_X_ADDR      = 32'h10000000;
 localparam CSR_SQRT_Y_ADDR      = 32'h20000000;
+localparam CSR_SQRT_BUSY_ADDR   = 32'h20000004;
 
 int sqrt_checks = 0;
 int sqrt_errors = 0;
 
 task automatic check_sqrt (input logic [31:0] x, input logic [31:0] y_exp);
-    logic [31:0] y;
+    logic [31:0] y, busy;
+    int polls;
     udm.wr32(CSR_SQRT_X_ADDR, x);
+    busy = 1;
+    polls = 0;
+    while (busy !== 0) begin
+        udm.rd32(CSR_SQRT_BUSY_ADDR);
+        busy = `UDM_BLOCK.bus_rdata_bi;
+        polls++;
+        if (polls == 100) $fatal(1, "sqrt calculation did not finish");
+    end
     udm.rd32(CSR_SQRT_Y_ADDR);
     y = `UDM_BLOCK.bus_rdata_bi;
     sqrt_checks++;
@@ -139,7 +149,7 @@ initial
 	// reading SW
 	udm.rd32(32'h00000004);
 	
-	// sqrt_comb test, vectors from designs/rtl/sqrt/sqrt_vectors.py
+	// sqrt_multicycle test, vectors from designs/rtl/sqrt/sqrt_vectors.py
 	check_sqrt(32'h00000000, 32'h00000000);
 	check_sqrt(32'h00000001, 32'h00000001);
 	check_sqrt(32'h00000002, 32'h00000001);
